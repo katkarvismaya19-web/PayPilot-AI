@@ -1,6 +1,6 @@
 # PayPilot AI — Intelligent Commerce & Growth Agent
 
-**Live demo:** [open the dashboard and customer portal](https://claude.ai/artifact/BnEQRPzknuCaLyW1KRQ3dZ) (runs in the browser on a snapshot of the real pipeline's output)
+**Live demo:** [katkarvismaya19-web.github.io/PayPilot-AI](https://katkarvismaya19-web.github.io/PayPilot-AI/) — the owner dashboard and customer portal, running in the browser on a snapshot of the real pipeline's output
 
 Built on two earlier projects: [SmartRetailAnalytics](https://github.com/katkarvismaya19-web/Vismayakatkar-SmartRetailAnalytics) (analytics layer) and [VeriRAG](https://github.com/katkarvismaya19-web/VeriRAG) (retrieval and citations).
 
@@ -33,7 +33,7 @@ triaged support inbox, with replies drafted from the store's support playbook.
  └─────────────────────┘
             │
             ▼
- ┌─────────────────────┐   LLM (Claude / OpenAI) or built-in
+ ┌─────────────────────┐   LLM (optional) or built-in
  │  Planner            │── rule-based planner picks channel,
  └─────────────────────┘   offer, message, citations
             │
@@ -72,8 +72,8 @@ With Docker instead:
 docker compose up --build
 ```
 
-`dist/paypilot-demo.html` is a single-file, offline version of the dashboard built from a real
-run of the pipeline (`python scripts/build_demo.py`). Open it in any browser; the "Customer
+`docs/index.html` (served by GitHub Pages as the live demo) is a single-file, offline version of the dashboard built from a real
+run of the pipeline (`python scripts/build_demo.py`, which also refreshes `dist/paypilot-demo.html`). Open it in any browser; the "Customer
 portal" button switches to the customer side, so the whole loop works on one page, and changes
 are kept in the browser until you press "Reset demo".
 
@@ -106,14 +106,20 @@ marketing consent as soon as it arrives.
 The portal signs customers in by email only, which is fine for a demo. Before real use, put it
 behind OTP or magic-link login and take the customer id from the session rather than the URL.
 
+### Publishing the live demo
+
+In the GitHub repository go to **Settings → Pages**, choose **Deploy from a branch**, branch
+`main`, folder `/docs`, and save. After a minute the demo is live at
+`https://<your-username>.github.io/PayPilot-AI/`.
+
 ## Configuration
 
 Copy `.env.example` to `.env` and fill in what you need.
 
 | Variable | Effect |
 |---|---|
-| `LLM_PROVIDER=anthropic` + `ANTHROPIC_API_KEY` | Claude writes the decisions and answers "Ask PayPilot" |
-| `LLM_PROVIDER=openai` + `OPENAI_API_KEY` | Same, with OpenAI |
+| `LLM_PROVIDER=openai` + `OPENAI_API_KEY` | An LLM writes the decisions, support replies and "Ask PayPilot" answers |
+| `OPENAI_MODEL` | Which model to use (default `gpt-4o-mini`) |
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET` | Real payment links via Razorpay (use test keys first) |
 | `RAZORPAY_WEBHOOK_SECRET` | Verifies webhook signatures (HMAC-SHA256) |
 | `AUTO_EXECUTE=true` | Agent sends low-risk actions without waiting for approval |
@@ -172,7 +178,7 @@ app/
 knowledge/             playbooks the agent retrieves from (add your own .md files)
 data/generate_data.py  seeded synthetic store generator
 static/index.html      owner dashboard and customer portal (served at / and /portal)
-scripts/build_demo.py  builds the offline demo
+scripts/build_demo.py  builds the offline demo (docs/index.html for GitHub Pages)
 tests/                 pytest suite
 ```
 
